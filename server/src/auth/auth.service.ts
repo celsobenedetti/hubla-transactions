@@ -1,51 +1,46 @@
 import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
+    ConflictException,
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
 } from "@nestjs/common";
 import { createJwt } from "src/common/utils";
 import { compareHash, hashString } from "src/common/utils/auth/bcrypt";
-import { UserService } from "src/modules/user/user.service";
+import { UserService } from "src/modules/users/user.service";
 import { AuthDto } from "./dto/auth.dto";
 import { JwtPayload } from "./interfaces/jwt-payload.interface";
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UserService) {}
+    constructor(private readonly userService: UserService) {}
 
-  async signUp(authDto: AuthDto) {
-    const existingUser = await this.userService.findByUsername(
-      authDto.username
-    );
+    async signUp(authDto: AuthDto) {
+        const existingUser = await this.userService.findByUsername(authDto.username);
 
-    if (existingUser)
-      throw new ConflictException("Username already registered");
+        if (existingUser) throw new ConflictException("Username already registered");
 
-    const { id, username } = await this.userService.create({
-      ...authDto,
-      password: await hashString(authDto.password),
-    });
+        const { id, username } = await this.userService.create({
+            ...authDto,
+            password: await hashString(authDto.password),
+        });
 
-    return { token: createJwt({ id, username }) };
-  }
+        return { token: createJwt({ id, username }) };
+    }
 
-  async signIn(signInDto: AuthDto) {
-    const user = await this.userService.findByUsername(signInDto.username);
+    async signIn(signInDto: AuthDto) {
+        const user = await this.userService.findByUsername(signInDto.username);
 
-    const isValidCredentials =
-      user && (await compareHash(signInDto.password, user.password));
-    if (!isValidCredentials)
-      throw new UnauthorizedException("Invalid Credentials");
+        const isValidCredentials = user && (await compareHash(signInDto.password, user.password));
+        if (!isValidCredentials) throw new UnauthorizedException("Invalid Credentials");
 
-    return { token: createJwt(user) };
-  }
+        return { token: createJwt(user) };
+    }
 
-  async deleteAccount(userData: JwtPayload) {
-    const user = await this.userService.findByUsername(userData.username);
+    async deleteAccount(userData: JwtPayload) {
+        const user = await this.userService.findByUsername(userData.username);
 
-    if (!user) throw new NotFoundException("Email not registered");
+        if (!user) throw new NotFoundException("Email not registered");
 
-    await this.userService.remove(userData.id);
-  }
+        await this.userService.remove(userData.id);
+    }
 }
