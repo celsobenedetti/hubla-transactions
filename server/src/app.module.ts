@@ -6,9 +6,12 @@ import { JwtGuard } from "./auth/guards/jwt.guard";
 import { JwtInterceptor } from "./common/interceptors/jwt.interceptor";
 import { PrismaService } from "./database/prisma/prisma.service";
 import { UserModule } from "./modules/user/user.module";
+import { VendorsModule } from './modules/vendors/vendors.module';
+import { ProductsModule } from './modules/products/products.module';
+import { TransactionsModule } from './modules/transactions/transactions.module';
 
 @Module({
-    imports: [AuthModule, UserModule],
+    imports: [AuthModule, UserModule, VendorsModule, ProductsModule, TransactionsModule],
     controllers: [AppController],
     providers: [
         PrismaService,
