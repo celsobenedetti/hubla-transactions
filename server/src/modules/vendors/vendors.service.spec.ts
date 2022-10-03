@@ -28,7 +28,7 @@ describe("VendorService", () => {
         });
     });
 
-    describe("findByEmail", () => {
+    describe("findByName", () => {
         it("should call prismaService.findUnique", async () => {
             jest.spyOn(prismaService.vendor, "findUnique").mockImplementationOnce(
                 (): any => undefined,
@@ -37,6 +37,16 @@ describe("VendorService", () => {
             await vendorService.findByName(factory.newMockVendor().name);
 
             expect(prismaService.vendor.findUnique).toBeCalled();
+        });
+    });
+
+    describe("findByNameOrCreate", () => {
+        it("should call prismaService.upsert", async () => {
+            jest.spyOn(prismaService.vendor, "upsert").mockImplementationOnce((): any => undefined);
+
+            await vendorService.findByNameOrCreate(factory.newMockVendor().name);
+
+            expect(prismaService.vendor.upsert).toBeCalled();
         });
     });
 
