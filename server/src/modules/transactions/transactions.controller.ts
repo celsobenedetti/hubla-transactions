@@ -1,15 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
+import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Patch,
+    Param,
+    Delete,
+    UseInterceptors,
+    UploadedFile,
+    BadRequestException,
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+
 import { TransactionsService } from "./transactions.service";
-import { CreateTransactionDto } from "./dto/create-transaction.dto";
 import { UpdateTransactionDto } from "./dto/update-transaction.dto";
+import { AllowUnauthorizedRequest } from "src/common/decorators";
 
 @Controller("transactions")
 export class TransactionsController {
     constructor(private readonly transactionsService: TransactionsService) {}
 
-    @Post()
-    create(@Body() createTransactionDto: CreateTransactionDto) {
-        return this.transactionsService.create(createTransactionDto);
+    @UseInterceptors(FileInterceptor("file"))
+    @Post("upload")
+    @AllowUnauthorizedRequest()
+    create(@UploadedFile() file: Express.Multer.File) {
+        if (!file) {
+            throw new BadRequestException("We didn't manage to catch the file, please try again");
+        }
+        return this.transactionsService.createMany(file.buffer.toString());
     }
 
     @Get()
