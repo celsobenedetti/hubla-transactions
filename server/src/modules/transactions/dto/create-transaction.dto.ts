@@ -1,5 +1,3 @@
-import { Product } from "@prisma/client";
-
 export class CreateTransactionDto {
     type: string;
     date: Date;

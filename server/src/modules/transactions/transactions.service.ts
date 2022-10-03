@@ -39,12 +39,12 @@ export class TransactionsService {
 
     //Internal business logic
 
-    private parseInputFile(transactionsFile: string): TransactionInpuDto[] {
+    parseInputFile(transactionsFile: string): TransactionInpuDto[] {
         const lines = transactionsFile.split("\n").filter((line) => line.length);
         return lines.map(this.parseTransaction);
     }
 
-    private parseTransaction(transactionString: string, index: number): TransactionInpuDto {
+    parseTransaction(transactionString: string, index: number): TransactionInpuDto {
         const type = transactionString.charAt(0);
         const dateString = transactionString.substring(1, 26);
         const productName = transactionString.substring(26, 56).trimEnd();
@@ -59,7 +59,7 @@ export class TransactionsService {
         return { type, dateString, productName, value, vendorName };
     }
 
-    private async normalizeTransactionsData(
+    async normalizeTransactionsData(
         transactionsData: TransactionInpuDto[],
     ): Promise<CreateTransactionDto[]> {
         const transactions = [];

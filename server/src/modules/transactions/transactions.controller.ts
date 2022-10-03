@@ -23,7 +23,7 @@ export class TransactionsController {
     @UseInterceptors(FileInterceptor("file"))
     @Post("upload")
     @AllowUnauthorizedRequest()
-    create(@UploadedFile() file: Express.Multer.File) {
+    uploadFile(@UploadedFile() file: Express.Multer.File) {
         if (!file) {
             throw new BadRequestException("We didn't manage to catch the file, please try again");
         }
