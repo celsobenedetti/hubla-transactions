@@ -1,0 +1,18 @@
+GET {{BASE_URL}}
+
+
+POST {{BASE_URL}}/auth/signup
+Content-Type: application/json
+
+{
+    "username": "A14",
+    "password": "1234568"
+}
+
+POST {{BASE_URL}}/auth/signin
+Content-Type: application/json
+
+{
+    "username": "A15",
+    "password": "1234568"
+}
