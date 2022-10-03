@@ -17,8 +17,11 @@ export class ProductsService {
     }
 
     async findByNameOrCreate(name: string, vendorId: number) {
-        const product = await this.prismaService.product.findUnique({ where: { name } });
-        return product || this.create(new CreateProductDto(name, vendorId));
+        return this.prismaService.product.upsert({
+            where: { name },
+            update: {},
+            create: { name, vendorId },
+        });
     }
 
     update(id: number, _updateProductDto: CreateProductDto) {

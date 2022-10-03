@@ -41,19 +41,19 @@ export class TransactionsService {
 
     private parseInputFile(transactionsFile: string): TransactionInpuDto[] {
         const lines = transactionsFile.split("\n").filter((line) => line.length);
-        return lines.map(this.parseTransactionInput);
+        return lines.map(this.parseTransaction);
     }
 
-    private parseTransactionInput(transactionInput: string): TransactionInpuDto {
-        const type = transactionInput.charAt(0);
-        const dateString = transactionInput.substring(1, 26);
-        const productName = transactionInput.substring(26, 56).trimEnd();
-        const value = +transactionInput.substring(56, 66);
-        const vendorName = transactionInput.substring(66).trimEnd();
+    private parseTransaction(transactionString: string, index: number): TransactionInpuDto {
+        const type = transactionString.charAt(0);
+        const dateString = transactionString.substring(1, 26);
+        const productName = transactionString.substring(26, 56).trimEnd();
+        const value = +transactionString.substring(56, 66);
+        const vendorName = transactionString.substring(66).trimEnd();
 
         if (!type || !dateString || !productName || !value || !vendorName) {
             throw new BadRequestException(
-                "The file formatting seems to be invalid, please check and try again",
+                `The file formatting seems to be invalid, please check and try again\nLine ${index}: ${transactionString}`,
             );
         }
         return { type, dateString, productName, value, vendorName };
@@ -62,16 +62,19 @@ export class TransactionsService {
     private async normalizeTransactionsData(
         transactionsData: TransactionInpuDto[],
     ): Promise<CreateTransactionDto[]> {
-        return Promise.all(
-            transactionsData.map(async ({ type, value, dateString, productName, vendorName }) => {
-                const date = new Date(dateString);
-                const { id: vendorId } = await this.vendorsService.findByNameOrCreate(vendorName);
-                const { id: productId } = await this.productsService.findByNameOrCreate(
-                    productName,
-                    vendorId,
-                );
-                return { type, date, value, vendorId, productId };
-            }),
-        );
+        const transactions = [];
+        for (const transaction of transactionsData) {
+            const { type, value, dateString, productName, vendorName } = transaction;
+
+            const date = new Date(dateString);
+            const { id: vendorId } = await this.vendorsService.findByNameOrCreate(vendorName);
+            const { id: productId } = await this.productsService.findByNameOrCreate(
+                productName,
+                vendorId,
+            );
+
+            transactions.push({ type, date, value, vendorId, productId });
+        }
+        return transactions;
     }
 }
