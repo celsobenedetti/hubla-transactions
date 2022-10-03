@@ -17,6 +17,11 @@ export class VendorsService {
         return this.prismaService.vendor.findUnique({ where: { name } });
     }
 
+    async findByNameOrCreate(name: string) {
+        const vendor = await this.prismaService.vendor.findUnique({ where: { name } });
+        return vendor || this.create(new CreateVendorDto(name));
+    }
+
     update(id: number, _updateVendorDto: CreateVendorDto) {
         return `TODO: This action updates a #${id} vendor`;
     }
