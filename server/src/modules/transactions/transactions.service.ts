@@ -45,21 +45,18 @@ export class TransactionsService {
     }
 
     private parseTransactionInput(transactionInput: string): TransactionInpuDto {
-        try {
-            const type = transactionInput.charAt(0);
-            const dateString = transactionInput.substring(1, 26);
-            const productName = transactionInput.substring(26, 56).trimEnd();
-            const value = +transactionInput.substring(56, 66);
-            const vendorName = transactionInput.substring(66).trimEnd();
+        const type = transactionInput.charAt(0);
+        const dateString = transactionInput.substring(1, 26);
+        const productName = transactionInput.substring(26, 56).trimEnd();
+        const value = +transactionInput.substring(56, 66);
+        const vendorName = transactionInput.substring(66).trimEnd();
 
-            if (!type || !dateString || !productName || !value || !vendorName) throw Error;
-
-            return { type, dateString, productName, value, vendorName };
-        } catch (err) {
+        if (!type || !dateString || !productName || !value || !vendorName) {
             throw new BadRequestException(
                 "The file formatting seems to be invalid, please check and try again",
             );
         }
+        return { type, dateString, productName, value, vendorName };
     }
 
     private async normalizeTransactionsData(
