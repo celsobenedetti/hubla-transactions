@@ -1,5 +1,6 @@
 GET {{BASE_URL}}
 
+GET {{BASE_URL}}/transactions
 
 POST {{BASE_URL}}/auth/signup
 Content-Type: application/json
@@ -13,6 +14,6 @@ POST {{BASE_URL}}/auth/signin
 Content-Type: application/json
 
 {
-    "username": "A15",
+    "username": "A14",
     "password": "1234568"
 }

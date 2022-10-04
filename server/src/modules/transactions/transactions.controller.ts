@@ -31,6 +31,7 @@ export class TransactionsController {
     }
 
     @Get()
+    @AllowUnauthorizedRequest()
     findAll() {
         return this.transactionsService.findAll();
     }

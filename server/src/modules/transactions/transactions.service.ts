@@ -22,7 +22,9 @@ export class TransactionsService {
     }
 
     findAll() {
-        return this.prismaService.transaction.findMany();
+        return this.prismaService.transaction.findMany({
+            include: { product: true, vendor: true },
+        });
     }
 
     findOne(id: number) {
