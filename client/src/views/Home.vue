@@ -96,7 +96,10 @@ const logOut = () => {
 
 <template>
     <div v-if="isLoading">Loading...</div>
-    <div v-else class="relative w-full h-full min-h-screen flex flex-col items-center justify-center">
+    <div
+        v-else
+        class="relative w-full h-full min-h-screen flex flex-col items-center justify-center"
+    >
         <button @click="logOut" class="btn btn-warning btn-xs absolute top-3 right-3">
             Logout
         </button>
@@ -117,25 +120,30 @@ const logOut = () => {
                         <th>id</th>
                         <th>Vendor</th>
                         <th>Product</th>
-                        <th>Value</th>
                         <th>Type</th>
+                        <th>Value</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody v-if="!selectedVendorId">
                     <tr v-for="transaction in data">
                         <th>{{ transaction.id }}</th>
-                        <th @click="selectedVendorId = transaction.vendorId"
-                            class="hover:text-primary hover:cursor-pointer">
+                        <th
+                            @click="selectedVendorId = transaction.vendorId"
+                            class="hover:text-primary hover:cursor-pointer"
+                        >
                             {{ transaction.vendor.name }}
                         </th>
                         <th>{{ transaction.product.name }}</th>
+                        <th>{{ getTransactionType(transaction.type) }}</th>
                         <th :class="transaction.type == 3 ? 'text-red-400' : 'text-primary'">
                             {{ transaction.value / 100 }}
                         </th>
-                        <th>{{ getTransactionType(transaction.type) }}</th>
-                        <th @click="deleteTransaction(transaction.id)"
-                            class="text-2xl cursor-pointer font-bold text-red-400">
+                        <th
+                            title="Delete"
+                            @click="deleteTransaction(transaction.id)"
+                            class="text-2xl cursor-pointer font-bold text-red-400"
+                        >
                             X
                         </th>
                     </tr>
@@ -144,17 +152,21 @@ const logOut = () => {
                 <tbody v-else>
                     <tr v-for="transaction in vendorTransactions.transactions">
                         <th>{{ transaction.id }}</th>
-                        <th @click="selectedVendorId = transaction.vendorId"
-                            class="hover:text-primary hover:cursor-pointer">
+                        <th
+                            @click="selectedVendorId = transaction.vendorId"
+                            class="hover:text-primary hover:cursor-pointer"
+                        >
                             {{ transaction.vendor.name }}
                         </th>
                         <th>{{ transaction.product.name }}</th>
+                        <th>{{ getTransactionType(transaction.type) }}</th>
                         <th :class="transaction.type == 3 ? 'text-red-400' : 'text-primary'">
                             {{ transaction.value / 100 }}
                         </th>
-                        <th>{{ getTransactionType(transaction.type) }}</th>
-                        <th @click="deleteTransaction(transaction.id)"
-                            class="text-2xl cursor-pointer font-bold text-red-400">
+                        <th
+                            @click="deleteTransaction(transaction.id)"
+                            class="text-2xl cursor-pointer font-bold text-red-400"
+                        >
                             X
                         </th>
                     </tr>
@@ -163,11 +175,15 @@ const logOut = () => {
                         <th>Total</th>
                         <th></th>
                         <th></th>
+                        <th></th>
                         <th :class="vendorTransactions.total < 0 ? 'text-red-400' : 'text-primary'">
                             {{ vendorTransactions.total / 100 }} R$
                         </th>
-                        <th @click="clearSelection" v-if="selectedVendorId"
-                            class="font-bold cursor-pointer text-red-400">
+                        <th
+                            @click="clearSelection"
+                            v-if="selectedVendorId"
+                            class="font-bold cursor-pointer text-red-400"
+                        >
                             clear
                         </th>
                     </tr>
@@ -177,6 +193,11 @@ const logOut = () => {
         <div v-else class="my-4">No transactions found, you can upload a file above</div>
     </div>
 
-    <ModalAlert v-if="modalAlert.content" :title="modalAlert.title" :content="modalAlert.content"
-        @close-modal-button="closeAlert" @close-modal-x="closeAlert" />
+    <ModalAlert
+        v-if="modalAlert.content"
+        :title="modalAlert.title"
+        :content="modalAlert.content"
+        @close-modal-button="closeAlert"
+        @close-modal-x="closeAlert"
+    />
 </template>
