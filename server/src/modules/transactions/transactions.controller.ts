@@ -1,20 +1,19 @@
 import {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Patch,
-    Param,
-    Delete,
-    UseInterceptors,
-    UploadedFile,
     BadRequestException,
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    UploadedFile,
+    UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 
-import { TransactionsService } from "./transactions.service";
 import { UpdateTransactionDto } from "./dto/update-transaction.dto";
-import { AllowUnauthorizedRequest } from "src/common/decorators";
+import { TransactionsService } from "./transactions.service";
 
 @Controller("transactions")
 export class TransactionsController {
@@ -22,7 +21,6 @@ export class TransactionsController {
 
     @UseInterceptors(FileInterceptor("file"))
     @Post("upload")
-    @AllowUnauthorizedRequest()
     uploadFile(@UploadedFile() file: Express.Multer.File) {
         if (!file) {
             throw new BadRequestException("We didn't manage to catch the file, please try again");
@@ -31,7 +29,6 @@ export class TransactionsController {
     }
 
     @Get()
-    @AllowUnauthorizedRequest()
     findAll() {
         return this.transactionsService.findAll();
     }

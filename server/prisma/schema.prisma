@@ -52,5 +52,6 @@ model Transaction {
     vendorId Int    @map("vendor_id")
     vendor   Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
+    @@unique([productId, vendorId, date])
     @@map("transactions")
 }

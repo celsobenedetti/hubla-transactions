@@ -18,7 +18,10 @@ export class TransactionsService {
         const transactionsData = this.parseInputFile(transactionsFile);
         const transactionsDtos = await this.normalizeTransactionsData(transactionsData);
 
-        return this.prismaService.transaction.createMany({ data: transactionsDtos });
+        return this.prismaService.transaction.createMany({
+            data: transactionsDtos,
+            skipDuplicates: true,
+        });
     }
 
     findAll() {
