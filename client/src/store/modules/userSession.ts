@@ -5,7 +5,6 @@ import { IUserSessionState } from "../../interfaces/vuex";
 export default {
     state: () => ({
         token: useStorage("jwtToken", ""),
-        bookmarks: [],
     }),
 
     mutations: {
