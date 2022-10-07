@@ -1,0 +1,48 @@
+version: "3"
+services:
+    hubla-postgres-test:
+        image: postgres:13-alpine
+        environment:
+            POSTGRES_USER: ${POSTGRES_USERNAME}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DATABASE}
+            DATABASE_URL: ${DATABASE_URL}
+        ports:
+            - ${POSTGRES_PORT}:${POSTGRES_PORT}
+        volumes:
+            - postgres:/var/lib/postgresql/data
+        command: postgres -p ${POSTGRES_PORT}
+        healthcheck:
+            test: pg_isready -p ${POSTGRES_PORT} -U postgres
+            interval: 10s
+            timeout: 5s
+            retries: 10
+
+    hubla-test:
+        build:
+            context: .
+            dockerfile: Dockerfile.test
+        container_name: hubla-test
+        depends_on:
+            hubla-postgres-test:
+                condition: service_healthy
+        restart: always
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "5"
+        working_dir: /usr/src/hubla
+        command: bash -c "yarn prisma generate && yarn prisma migrate deploy && yarn test"
+        environment:
+            NODE_ENV: test
+            POSTGRES_USERNAME: ${POSTGRES_USERNAME}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_HOST: ${POSTGRES_HOST}
+            POSTGRES_DATABASE: ${POSTGRES_DATABASE}
+            POSTGRES_PORT: ${POSTGRES_PORT}
+            DATABASE_URL: ${DATABASE_URL}
+            JWT_SECRET: ${JWT_SECRET}
+
+volumes:
+    postgres:

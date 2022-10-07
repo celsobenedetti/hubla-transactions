@@ -1,0 +1,6 @@
+FROM node:16.15
+WORKDIR /usr/src/hubla
+COPY ./package*.json ./
+COPY ./prisma ./prisma
+RUN yarn install
+COPY . .
