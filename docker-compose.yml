@@ -1,0 +1,67 @@
+version: "3"
+services:
+    hubla-prod:
+        build:
+            context: ./server
+            dockerfile: Dockerfile
+        container_name: hubla-prod
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "5"
+        working_dir: /usr/src/hubla
+        command: bash -c "yarn prisma generate && yarn prisma migrate deploy && yarn run start"
+        restart: always
+        environment:
+            NODE_ENV: production
+            DATABASE_URL: ${DATABASE_URL}
+            JWT_SECRET: ${JWT_SECRET}
+        volumes:
+            - ./.env:/usr/src/hubla/.env
+
+        depends_on:
+            hubla-postgres-prod:
+                condition: service_started
+
+    hubla-front:
+        build:
+            context: ./client
+            dockerfile: Dockerfile
+        container_name: hubla-client
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "5"
+        working_dir: /usr/src/hubla
+        command: yarn build
+        environment:
+            NODE_ENV: production
+            VITE_SERVER_BASE_URL: ${VITE_SERVER_BASE_URL}
+
+        volumes:
+            - /usr/src/hubla/client:/usr/src/hubla/dist
+
+    hubla-postgres-prod:
+        image: postgres:13-alpine
+        container_name: hubla-postgres-prod
+        environment:
+            POSTGRES_USER: ${POSTGRES_USERNAME}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DATABASE}
+        ports:
+            - ${POSTGRES_PORT}:${POSTGRES_PORT}
+        volumes:
+            - /usr/local/hubla-pg/data:/var/lib/postgresql/data
+        command: postgres -p ${POSTGRES_PORT}
+
+    hubla-nginx:
+        image: nginx
+        restart: always
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - ./nginx:/etc/nginx/conf.d
+            - /usr/src/hubla/client:/var/www/html

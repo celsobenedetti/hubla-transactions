@@ -15,6 +15,10 @@ const router = useRouter();
 const store = useStore();
 const sessionToken = store.getters.sessionToken;
 
+if (!sessionToken) {
+    router.push("/signin");
+}
+
 const modalAlert = ref({
     title: "",
     content: "",
@@ -27,7 +31,11 @@ const {
     data,
     execute: getTransactions,
     isLoading: isLoadingGet,
-} = useGetServer("transactions", { immediate: true, token: sessionToken });
+} = useGetServer("transactions", { immediate: false, token: sessionToken });
+
+if (sessionToken) {
+    getTransactions();
+}
 
 const {
     execute: postFile,
@@ -83,10 +91,6 @@ const getTransactionType = (type: number) => {
     if (type == 3) return "Commission Payment";
     return "Commission Received";
 };
-
-if (!sessionToken) {
-    router.push("/signin");
-}
 
 const logOut = () => {
     store.commit("logUserOut");
