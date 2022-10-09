@@ -72,7 +72,7 @@ Curently there is no docker development environment setup
     -   `422` - Body validation error on POST requests
 
 -   By default routes require: `Authorization: Bearer TOKEN` header for JWT auth
--   🔓denotes an open route
+-   `🔓` denotes an open route
 
 ```yml
 GET /
