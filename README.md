@@ -9,11 +9,10 @@
 
 ## Built with
 
+-   ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white&style=for-the-badge)
 -   ![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?logo=nestjs&logoColor=white&style=for-the-badge)
 -   ![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)
 -   ![Postgres](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
--
--   ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white&style=for-the-badge)
 -   ![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?logo=vuedotjs&logoColor=%234FC08D&style=for-the-badge)
 -   ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?logo=tailwind-css&logoColor=white&style=for-the-badge)
 
@@ -59,6 +58,10 @@ Curently there is no docker development environment setup
 2. Copy `.env.example` to a `.env` file, making changes if necessary
     - The `VITE_SERVER_BASE_URL` environment variable should point to the running server URL
 3. `yarn dev`
+
+## Database ERD
+
+<img src="https://github.com/celso-patiri/hubla-transactions/blob/main/ERD.svg" alt="Logo" height="700">
 
 ## :rocket: Routes
 
